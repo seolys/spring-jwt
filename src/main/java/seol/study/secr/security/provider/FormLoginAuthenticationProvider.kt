@@ -19,6 +19,10 @@ open class FormLoginAuthenticationProvider : AuthenticationProvider {
     @Autowired
     lateinit var passwordEncoder: PasswordEncoder
 
+    override fun supports(authentication: Class<*>?): Boolean {
+        return PreAuthorizationToken::class.java.isAssignableFrom(authentication)
+    }
+
     override fun authenticate(authentication: Authentication?): Authentication {
         // 인증 프로세스
         if (authentication !is PreAuthorizationToken) {
@@ -35,7 +39,9 @@ open class FormLoginAuthenticationProvider : AuthenticationProvider {
             throw NoSuchElementException("인증정보가 정확하지 않습니다.")
         }
 
-        return PostAuthorizationToken.getTokenFromAccountContext(AccountContext.fromAccountModel(findAccount))
+        // postToken을 생성하여 리턴.
+        val postToken: PostAuthorizationToken = PostAuthorizationToken.getTokenFromAccountContext(AccountContext.fromAccountModel(findAccount))
+        return postToken
     }
 
     private fun isCorrectAccount(password: String, account: Account): Boolean {
@@ -43,8 +49,5 @@ open class FormLoginAuthenticationProvider : AuthenticationProvider {
        return passwordEncoder.matches(password, account.password)
     }
 
-    override fun supports(authentication: Class<*>?): Boolean {
-        return PreAuthorizationToken::class.java.isAssignableFrom(authentication)
-    }
 
 }

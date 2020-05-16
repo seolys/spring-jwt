@@ -26,17 +26,16 @@ class FormLoginFilter(defaultFilterProcessesUrl: String?) : AbstractAuthenticati
     val log by LoggerDelegate()
 
     override fun attemptAuthentication(request: HttpServletRequest?, response: HttpServletResponse?): Authentication {
-        val dto: FormLoginDto = ObjectMapper().readValue(request!!.reader, FormLoginDto::class.java)
+        // Request 데이터로 DTO 생성.
+        val dto: FormLoginDto = ObjectMapper().readValue(request?.reader, FormLoginDto::class.java)
+
+        // PreAuthorizationToken 생성하여 authenticate에 넘긴다.
         val token: PreAuthorizationToken = PreAuthorizationToken(dto.id, dto.password)
-        return super.getAuthenticationManager().authenticate(token)
+        return super.getAuthenticationManager().authenticate(token) // Provider 호출됨.
     }
 
     override fun successfulAuthentication(request: HttpServletRequest?, response: HttpServletResponse?, chain: FilterChain?, authResult: Authentication?) {
 //        super.successfulAuthentication(request, response, chain, authResult)
-        println(super.getSuccessHandler()::class.java.name)
-        println(super.getSuccessHandler()::class.java.name)
-        println(super.getSuccessHandler()::class.java.name)
-        println(super.getSuccessHandler()::class.java.name)
         super.getSuccessHandler().onAuthenticationSuccess(request, response, authResult)
     }
 

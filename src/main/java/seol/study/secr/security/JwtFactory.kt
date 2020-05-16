@@ -20,6 +20,7 @@ open class JwtFactory {
         try {
             val token: String = JWT.create()
                     .withIssuer("seolnavy")
+                    .withClaim("USER_NAME", context.username)
                     .withClaim("USER_ROLE", authorities.first().authority)
                     .sign(generateAlgorithm())
             return token

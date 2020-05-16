@@ -7,6 +7,7 @@ import org.springframework.http.MediaType
 import org.springframework.security.core.Authentication
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler
 import org.springframework.stereotype.Component
+import seol.study.secr.LoggerDelegate
 import seol.study.secr.dto.TokenDto
 import seol.study.secr.security.AccountContext
 import seol.study.secr.security.JwtFactory
@@ -21,6 +22,8 @@ open class FormLoginAuthenticationSuccessHandler : AuthenticationSuccessHandler{
     lateinit var jwtFactory: JwtFactory
     @Autowired
     lateinit var objectMapper: ObjectMapper
+
+    val log by LoggerDelegate()
 
     override fun onAuthenticationSuccess(request: HttpServletRequest?, response: HttpServletResponse?, auth: Authentication?) {
         val context = auth!!.principal as AccountContext
