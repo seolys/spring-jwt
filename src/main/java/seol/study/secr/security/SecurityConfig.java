@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,12 +14,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import seol.study.secr.domain.SocialProvider;
 import seol.study.secr.security.filter.FormLoginFilter;
 import seol.study.secr.security.filter.JwtAuthenticationFilter;
-import seol.study.secr.security.handler.FormLoginAuthenticationSuccessHandler;
+import seol.study.secr.security.filter.SocialLoginFilter;
+import seol.study.secr.security.handler.LoginAuthenticationSuccessHandler;
 import seol.study.secr.security.handler.JwtAuthenticationFailureHandler;
 import seol.study.secr.security.provider.FormLoginAuthenticationProvider;
 import seol.study.secr.security.provider.JwtAuthenticationProvider;
+import seol.study.secr.security.provider.SocialLoginAuthenticationProvider;
 
 import java.util.Arrays;
 
@@ -29,14 +31,17 @@ import java.util.Arrays;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    private FormLoginAuthenticationSuccessHandler successHandler;
+    private LoginAuthenticationSuccessHandler successHandler;
     @Autowired
-    private FormLoginAuthenticationProvider provider;
+    private FormLoginAuthenticationProvider formProvider;
 
     @Autowired
     private JwtAuthenticationProvider jwtProvider;
     @Autowired
     private JwtAuthenticationFailureHandler jwtFailureHandler;
+
+    @Autowired
+    private SocialLoginAuthenticationProvider socialProvider;
 
     @Autowired
     private HeaderTokenExtractor headerTokenExtractor;
@@ -59,7 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
-            .authenticationProvider(this.provider)
+            .authenticationProvider(this.formProvider)
+            .authenticationProvider(this.socialProvider)
             .authenticationProvider(this.jwtProvider)
         ;
     }
@@ -83,6 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // 필터 등록.
         http
             .addFilterBefore(formLoginFilter(), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(socialFilter(), UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
         ;
     }
@@ -95,10 +102,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     protected JwtAuthenticationFilter jwtFilter() throws Exception {
-        FilterSkipMatcher matcher = new FilterSkipMatcher(Arrays.asList("/formlogin"), "/api/**");
+        FilterSkipMatcher matcher = new FilterSkipMatcher(Arrays.asList("/formlogin", "/social"), "/api/**");
         JwtAuthenticationFilter filter = new JwtAuthenticationFilter(matcher, headerTokenExtractor);
         filter.setAuthenticationFailureHandler(jwtFailureHandler);
         filter.setAuthenticationManager(super.authenticationManagerBean());
         return filter;
     }
+
+    protected SocialLoginFilter socialFilter() throws Exception {
+        SocialLoginFilter filter = new SocialLoginFilter("/social");
+        filter.setAuthenticationSuccessHandler(successHandler);
+        filter.setAuthenticationManager(super.authenticationManagerBean());
+        return filter;
+    }
+
 }

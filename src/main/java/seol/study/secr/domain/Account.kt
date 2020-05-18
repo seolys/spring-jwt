@@ -23,6 +23,10 @@ data class Account (
         @Enumerated(value = EnumType.STRING)
         val userRole: UserRole? = null,
 
+        @Column(name = "ACCOUNT_SOCIAL_PROVIDER")
+        @Enumerated(value = EnumType.STRING)
+        val socialProvider: SocialProvider? = null,
+
         @Column(name = "ACCOUNT_SOCIAL_ID")
         val socialId: Long? = null,
 

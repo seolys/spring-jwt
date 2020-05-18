@@ -1,9 +1,11 @@
 package seol.study.secr.security.token
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import seol.study.secr.dto.SocialLoginDto
 
-class PreAuthorizationToken(principal: Any?, credentials: Any?)
-    : UsernamePasswordAuthenticationToken(principal, credentials) {
+class PreAuthorizationToken : UsernamePasswordAuthenticationToken {
+
+    constructor(principal: Any?, credentials: Any?) : super(principal, credentials)
 
     fun getUserId() : String = super.getPrincipal() as String
 

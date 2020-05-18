@@ -16,7 +16,7 @@ open class Application {
     open fun bootstrapTestAccount(accountRepository: AccountRepository, encoder: PasswordEncoder) : CommandLineRunner {
         return CommandLineRunner {
             val password = encoder.encode("1234")
-            val account = Account(userId = "seolnavy", password = password, userRole = UserRole.USER)
+            val account = Account(userId = "seolnavy", username = "설연수", password = password, userRole = UserRole.USER)
             accountRepository.save(account)
         }
     }

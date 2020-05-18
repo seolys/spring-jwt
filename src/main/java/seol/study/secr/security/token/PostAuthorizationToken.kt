@@ -13,4 +13,9 @@ class PostAuthorizationToken(principal: Any?, credentials: Any?, authorities: Mu
         }
     }
 
+    fun getAccountContext() : AccountContext {
+        return super.getPrincipal() as AccountContext
+    }
+
+
 }

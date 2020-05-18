@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Component
-open class FormLoginAuthenticationSuccessHandler : AuthenticationSuccessHandler{
+open class LoginAuthenticationSuccessHandler : AuthenticationSuccessHandler{
 
     @Autowired
     lateinit var jwtFactory: JwtFactory

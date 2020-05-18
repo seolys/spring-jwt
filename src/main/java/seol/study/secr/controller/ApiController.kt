@@ -21,11 +21,7 @@ open class ApiController {
         println("/api/hello")
 
         val token = authentication as PostAuthorizationToken
-//        println("token : " + token)
-//        println("token.principal = ${token.principal}")
-//        println("token.name = ${token.name}")
-        return token.name
-//        return "{\"key\": \"12345\"}"
+        return token.getAccountContext().username
     }
 
 }
