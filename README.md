@@ -1,6 +1,6 @@
 ### 프로젝트 설명
 - Springboot2, Spring-Security, JPA, JWT활용하여 인증 구현.
-- 봄이네집 유튜브를 보면서 모든소스를 Kotlin으로 클론코딩을 추구하였음. 
+- 봄이네집 유튜브를 보면서 모든소스를 Kotlin으로 클론코딩... 
 - 봄이네집 : https://www.youtube.com/playlist?list=PLcsqrv8NxApXzHViDU2fB1ew7KoLoaB02
 
 ---
